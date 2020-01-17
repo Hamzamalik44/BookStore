@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- jQuery library -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="js/bootstrap.js"></script>
+
+    <title>Document</title>
+</head>
+
+<body bgcolor="gray" onload="select()">
+    <div class="container">
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add New Book</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/action_page.php">
+                            <div class="form-group">
+                                <label for="email">Book's Name:</label>
+                                <input type="text" class="form-control" id="bookName">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Author's Name:</label>
+                                <input type="text" class="form-control" id="authorName">
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd">Photo:</label>
+                                <input type="file" class="form-control" id="photo">
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd">Description:</label>
+                                <textarea type="text" class="form-control" id="description"></textarea>
+                            </div>
+
+                            <input type="button" onclick="insertButton()" data-dismiss="modal" value="Save"
+                                class="btn btn-success" />
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- update Modal -->
+        <div class="modal fade" id="updatemyModal" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Edit Book</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/action_page.php">
+                            <input type="hidden" id="editid">
+                            <div class="form-group">
+                                <label for="email">Book's Name:</label>
+                                <input type="text" class="form-control" id="eidtbookName">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Author's Name:</label>
+                                <input type="text" class="form-control" id="editauthorName">
+                            </div>
+                            <div class="form-group">
+
+                                <img src=""  alt="" id="editphoto" height="100" width="140">
+                                <br>
+                                <br>
+                                <input type="file" class="form-control" id="editnewphoto">
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd">Description:</label>
+                                <textarea type="text" class="form-control" id="editdescription"></textarea>
+                            </div>
+
+                            <input type="button" onclick="edit()" data-dismiss="modal" value="Save"
+                                class="btn btn-success" />
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- delete Modal -->
+        <div class="modal fade" id="deletemyModal" role="dialog">
+            <input type="hidden" id="deleteid">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Are You Sure To Delete This Book?</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <input type="button" onclick="Delete()" data-dismiss="modal" value="Yes"
+                            class="btn btn-danger" />
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid btn-primary">
+        <h2> Book Store </h2>
+    </div>
+    <br>
+
+    <div class="container">
+        <button type="button" class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal">Add New</button>
+    </div>
+
+    <br>
+    <br>
+
+
+    <div class="container" id="comboBox">
+
+
+        <div class=" container bg-primary">
+            <h4>Books List</h4>
+        </div>
+        <table class="table table-hover table-dark table-stripted">
+            <thead>
+                <tr class="">
+                    <th>#</th>
+                    <th>Book's Name</th>
+                    <th>Author's Name</th>
+                    <th>Description</th>
+                    <th>Photo</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody id="result">
+
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+
+        </table>
+
+    </div>
+
+</body>
+
+</html>
+
+<script>
+
+    function insertButton() {
+
+        var bookName = document.getElementById('bookName').value;
+        var authorName = document.getElementById('authorName').value;
+        var photo = document.getElementById('photo').value;
+        var description = document.getElementById('description').value;
+
+
+        insert(bookName, authorName, photo, description);
+
+    }
+
+    function edit(){
+        var id = document.getElementById('editid').value;
+        var bookName = document.getElementById('eidtbookName').value;
+        var authorName = document.getElementById('editauthorName').value;
+        var photo = document.getElementById('editnewphoto').value;
+        var description = document.getElementById('editdescription').value;
+
+        var path = photo;
+        var tokens = path.split('\\');//split path
+        var filename = "images/" + tokens[tokens.length - 1];//take file name
+
+        update(id,bookName,authorName,filename,description);
+        select();
+    }
+
+    //  insert
+    function insert(bookName, authorName, photo, description) {
+        var id;
+        var books = [];
+        var path = photo;
+        var tokens = path.split('\\');//split path
+        var filename = "images/" + tokens[tokens.length - 1];//take file name
+
+        if (window.localStorage.getItem("books") != null) {
+            books = JSON.parse(window.localStorage.getItem("books"));
+        }
+
+        id = books.length + 1;
+        var book = { Id: id, BookName: bookName, AuthorName: authorName, Photo: filename, Description: description };
+        books.push(book);
+
+        window.localStorage.setItem("books", JSON.stringify(books));
+        select();
+    }
+
+    // update 
+    function update(id, bookName, authorName, photo, description) {
+        var id;
+        var books = [];
+
+        if (window.localStorage.getItem("books") != null) {
+            books = JSON.parse(window.localStorage.getItem("books"));
+
+            for (var i = 0; i < books.length; i++) {
+
+                if (books[i].Id == id) {
+                    if(photo==''){
+                    books[i].BookName = bookName;
+                    books[i].AuthorName = authorName;
+                    books[i].Description = description;
+    
+                    }
+                    else{
+                    books[i].BookName = bookName;
+                    books[i].AuthorName = authorName;
+                    books[i].Photo = photo;
+                    books[i].Description = description;
+                    }
+                    window.localStorage.setItem("books", JSON.stringify(books));
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // select 
+    function select() {
+        var tbody = document.getElementById('result');
+
+        tbody.innerHTML = "";
+        if (window.localStorage.getItem("books") != null) {
+            books = JSON.parse(window.localStorage.getItem("books"));
+        }
+        for (var i = 0; i < books.length; i++) {
+            tbody.innerHTML += "<td>" + books[i].Id + "</td>\
+                           <td>"+ books[i].BookName + "</td>\
+                           <td>"+ books[i].AuthorName + "</td>\
+                           <td>"+ books[i].Description + "</td>\
+                           <td><img src="+ books[i].Photo + " height='40' width='63'></td>\
+                           <td>\
+                               <button class='btn btn-primary btn-sm' onclick="+getBook(books[i].Id)+"  data-toggle='modal' data-target='#updatemyModal'>Edit</button>\
+                               <button class='btn btn-danger btn-sm'  onclick="+getId(books[i].Id)+" data-toggle='modal' data-target='#deletemyModal'>Delete</button>\
+                           </td>";
+
+        }
+    }
+
+function getId(id){
+    document.getElementById('deleteid').value=id;
+
+}
+    // delete 
+    function Delete() {
+
+        var id= document.getElementById('deleteid').value;
+        if (window.localStorage.getItem("books") != null) {
+            books = JSON.parse(window.localStorage.getItem("books"));
+        }
+
+        for (var i = 0; i < books.length; i++) {
+            if (books[i].Id == id) {
+
+                books.splice(i, 1);
+                window.localStorage.setItem("books", JSON.stringify(books));
+                select();
+                return true;
+                
+            }
+        }
+        return false;
+
+    }
+    function getBook(id) {
+       var editid= document.getElementById('editid');
+       var bookName = document.getElementById('eidtbookName');
+       var authorName= document.getElementById('editauthorName');
+       var description= document.getElementById('editdescription');
+       var photo= document.getElementById('editphoto');
+       
+       
+
+        if (window.localStorage.getItem("books") != null) {
+            books = JSON.parse(window.localStorage.getItem("books"));
+        }
+        for (var i = 0; i < books.length; i++) {
+            if (books[i].Id == id) {
+                
+                editid.value=books[i].Id;
+                bookName.value=books[i].BookName;
+                authorName.value=books[i].AuthorName;
+                description.value= books[i].Description;
+                photo.src=books[i].Photo;
+
+                return true
+            }
+        }
+        return false;
+
+    }
+</script>
